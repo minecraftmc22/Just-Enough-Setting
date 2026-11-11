@@ -1,0 +1,9 @@
+{
+  "folium": 1,
+  "id": "just-enough-setting",
+  "name": "Just Enough Setting（SMTC）",
+  "version": "1.1.1",
+  "description": "把系统媒体（Windows SMTC / 媒体浮窗）的标题栏、歌手栏、专辑栏与浏览器标签页标题交给可拖拽的片段列表自由编排：歌曲名、歌手、专辑、歌词、翻译、逐词歌词、播放时长（已播放 + 进度条 + 总时长，模板可改）、自定义网站名与连接符（连接符可以就是一个空格）；歌词延迟可自动精确排期到行时间戳，也可手动 ±3 秒；带快速预设、JSON 导入导出与实时诊断面板。",
+  "client": "client.mjs",
+  "permissions": ["ui.stage"]
+}
