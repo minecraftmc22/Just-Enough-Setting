@@ -59,6 +59,9 @@ Folia 播放器的模组（mod id `just-enough-setting`）。把系统媒体（W
 相对 1.2.3 改动的文件：`mod.json`、`client.mjs`、`index.cjs`、`lib/clock.mjs`、`lib/config.mjs`、
 `lib/controller.mjs`、`steam/connector.mjs`、`ui/diagnostics.mjs`，另加市场介绍图 `preview.png`（见下节）。
 
+提交到模组市场前还改了一处目录布局：`steam/node_modules/lzma` 换成 `steam/deps/lzma`，`vendor.cjs` 里那句
+`requireWithFallback("lzma-native", "lzma")` 改成指向 `./deps/lzma`。原因见下节。
+
 ## 图标与市场介绍图
 
 - `assets/icon.png`（1024×1024，圆角透明）与 `assets/icon.svg`（矢量原件，任意尺寸重出都清晰）。
@@ -114,6 +117,9 @@ STEAM_DEPS=<那个目录>/node_modules node dev/folium/steam-bundle/build.mjs
 产物落在模组的 `steam/vendor.cjs`，同目录的 `system.pem` 也必须一起带走（`@doctormckay/steam-crypto` 在
 `require` 时按 `__dirname` 读它）。
 
+还要带走 `steam/deps/lzma`：`steam-user` 用 `requireWithFallback('lzma-native', 'lzma')` 把包名当参数传进去，
+打包器看不见这句 require，只能让它在运行时从磁盘解析。目录名刻意不叫 `node_modules`——那样上架时会被整层剔除。
+
 ## 凭据
 
 仓库里**没有任何**账号密码或刷新令牌。登录用的凭据只在运行时写进宿主的模组存储（`api.storage`），落在 Folia 的
@@ -123,6 +129,9 @@ STEAM_DEPS=<那个目录>/node_modules node dev/folium/steam-bundle/build.mjs
 
 - `v1.2.4/` 里没有 `README.md`：开发仓库的模组目录里那份 169 KB 的 README 是 Folia 自己的《模组包规范》，
   不属于本模组，归档时略去。
-- `v1.2.3/` 与 `v1.2.4/` 里的 `steam/node_modules/lzma` 是运行时依赖，不是误提交的依赖树。
-- `v1.2.4` 这个标签在提交到模组市场之前移动过一次：补 `preview.png` 与清单里的 `preview` 一行时，
-  把它指到了新提交。移动发生在任何审查之前，指向的始终是同一份 1.2.4 功能代码。
+- `v1.2.3/` 里的 `steam/node_modules/lzma` 是运行时依赖，不是误提交的依赖树。`v1.2.4/` 起改放
+  `steam/deps/lzma`：folium-compound 的导入脚本会跳过任何一层叫 `node_modules` 的目录
+  （`tools/ci/lib/source.mjs` 的 `isExcludedFromImport`），照原样提交的话签名包里会缺这个包，
+  `require` 产物直接 `MODULE_NOT_FOUND`。
+- `v1.2.4` 这个标签在提交到模组市场之前移动过两次：第一次补 `preview.png` 与清单里的 `preview`，
+  第二次换 lzma 的目录布局。两次都发生在任何审查之前，功能代码始终是同一份。
