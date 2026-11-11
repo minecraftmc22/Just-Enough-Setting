@@ -19,7 +19,7 @@ Folia 播放器的模组（mod id `just-enough-setting`）。把系统媒体（W
 | [`v1.1.1/`](v1.1.1) | 1.1.1 | 2026-10-14 | Folium 1 | `ui.stage` | 仅客户端 | 12 | 156 KB |
 | [`v1.2.2/`](v1.2.2) | 1.2.2 | 2026-10-14 | Folium 1 | — | — | 1 | 12 KB |
 | [`v1.2.3/`](v1.2.3) | 1.2.3 | 2026-11-11 | Folium 1 | `ui.stage` + `filesystem.data` | `index.cjs` + 客户端 | 34 | 8.5 MB |
-| [`v1.2.4/`](v1.2.4) | 1.2.4 | 2026-11-11 | Folium 2 名字就绪（清单仍写 1） | `stageLayers` + `filesystem.data` | `index.cjs` + 客户端 | 35 | 8.7 MB |
+| [`v1.2.4/`](v1.2.4) | 1.2.4 | 2026-11-11 | Folium 2 名字就绪（清单仍写 1） | `stageLayers` + `filesystem.data` | `index.cjs` + 客户端 | 37 | 8.8 MB |
 
 「归档日期」取自本机备份目录的时间戳，不是发布日期。每个版本对应一个同名的 git 标签（`v1.1.0` … `v1.2.4`），
 标签指向「加入该版本」的那次提交。
@@ -61,6 +61,23 @@ Folia 播放器的模组（mod id `just-enough-setting`）。把系统媒体（W
 
 提交到模组市场前还改了一处目录布局：`steam/node_modules/lzma` 换成 `steam/deps/lzma`，`vendor.cjs` 里那句
 `requireWithFallback("lzma-native", "lzma")` 改成指向 `./deps/lzma`。原因见下节。
+
+归档 1.2.4 时还补了许可证文件：`LICENSE`（AGPL-3.0 全文）与 `steam/THIRD-PARTY-NOTICES.md`（bundle 里 41 个
+第三方包的许可证原文）。两者都在模组目录里，会跟着签名包一起分发。
+
+## 许可证
+
+本仓库与全部版本目录均为 **AGPL-3.0**（[`LICENSE`](LICENSE) 是 FSF 的原文，未作改动）。
+
+Steam 连接器里捆了第三方代码，各自的许可证**没有**被 AGPL 覆盖：
+
+- `v1.2.4/steam/THIRD-PARTY-NOTICES.md` 汇总了 `steam/vendor.cjs` 里 41 个包的许可证原文，
+  以及每个包的版权行；清单是从产物的模块路径注释里提取的，不是手抄。
+- `v1.2.4/steam/deps/lzma/LICENSE` 是 lzma 的 MIT 原文（它单独成目录，许可证跟着走）。
+- 上架表单要求「包含第三方库时把它们的许可证文件放在模组目录里」，这两份就是为此准备的。
+
+`v1.2.3/` 及更早的归档目录里没有 `LICENSE` 文件——它们是当时原样的快照，加进去就不再是「原样」了；
+仓库根的 `LICENSE` 覆盖这些目录里的代码。
 
 ## 图标与市场介绍图
 
@@ -133,5 +150,7 @@ STEAM_DEPS=<那个目录>/node_modules node dev/folium/steam-bundle/build.mjs
   `steam/deps/lzma`：folium-compound 的导入脚本会跳过任何一层叫 `node_modules` 的目录
   （`tools/ci/lib/source.mjs` 的 `isExcludedFromImport`），照原样提交的话签名包里会缺这个包，
   `require` 产物直接 `MODULE_NOT_FOUND`。
-- `v1.2.4` 这个标签在提交到模组市场之前移动过两次：第一次补 `preview.png` 与清单里的 `preview`，
-  第二次换 lzma 的目录布局。两次都发生在任何审查之前，功能代码始终是同一份。
+- `v1.2.4` 这个标签在提交到模组市场之前移动过三次：第一次补 `preview.png` 与清单里的 `preview`，
+  第二次换 lzma 的目录布局，第三次补 `LICENSE` 与 `steam/THIRD-PARTY-NOTICES.md`。三次都发生在任何审查
+  之前；相对第一次打标签时的内容，功能代码（`client.mjs`、`index.cjs`、`lib/`、`ui/`、`steam/connector.mjs`）
+  一行未改，变动只有 `mod.json` 的 `preview` 字段、`vendor.cjs` 里 lzma 的 require 路径和新增的许可证文件。
