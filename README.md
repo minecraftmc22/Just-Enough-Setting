@@ -1,5 +1,7 @@
 # Just Enough Setting
 
+<img src="assets/icon.png" alt="Just Enough Setting 图标" width="96">
+
 Folia 播放器的模组（mod id `just-enough-setting`）。把系统媒体（Windows SMTC / 媒体浮窗）的标题栏、歌手栏、
 专辑栏、浏览器标签页标题，以及 Steam 好友列表里那句「正在玩」，交给同一套可拖拽的片段列表自由编排：歌曲名、
 歌手、专辑、歌词、翻译、逐词歌词、播放时长（已播放 + 进度条 + 总时长，模板可改）、自定义网站名与连接符
@@ -17,7 +19,7 @@ Folia 播放器的模组（mod id `just-enough-setting`）。把系统媒体（W
 | [`v1.1.1/`](v1.1.1) | 1.1.1 | 2026-10-14 | Folium 1 | `ui.stage` | 仅客户端 | 12 | 156 KB |
 | [`v1.2.2/`](v1.2.2) | 1.2.2 | 2026-10-14 | Folium 1 | — | — | 1 | 12 KB |
 | [`v1.2.3/`](v1.2.3) | 1.2.3 | 2026-11-11 | Folium 1 | `ui.stage` + `filesystem.data` | `index.cjs` + 客户端 | 34 | 8.5 MB |
-| [`v1.2.4/`](v1.2.4) | 1.2.4 | 2026-11-11 | Folium 2 名字就绪（清单仍写 1） | `stageLayers` + `filesystem.data` | `index.cjs` + 客户端 | 34 | 8.5 MB |
+| [`v1.2.4/`](v1.2.4) | 1.2.4 | 2026-11-11 | Folium 2 名字就绪（清单仍写 1） | `stageLayers` + `filesystem.data` | `index.cjs` + 客户端 | 35 | 8.7 MB |
 
 「归档日期」取自本机备份目录的时间戳，不是发布日期。每个版本对应一个同名的 git 标签（`v1.1.0` … `v1.2.4`），
 标签指向「加入该版本」的那次提交。
@@ -55,7 +57,17 @@ Folia 播放器的模组（mod id `just-enough-setting`）。把系统媒体（W
 拒绝加载。换成 major 2 的宿主时，只需要把这一行改成 `2`，代码不用再动。
 
 相对 1.2.3 改动的文件：`mod.json`、`client.mjs`、`index.cjs`、`lib/clock.mjs`、`lib/config.mjs`、
-`lib/controller.mjs`、`steam/connector.mjs`、`ui/diagnostics.mjs`。
+`lib/controller.mjs`、`steam/connector.mjs`、`ui/diagnostics.mjs`，另加市场介绍图 `preview.png`（见下节）。
+
+## 图标与市场介绍图
+
+- `assets/icon.png`（1024×1024，圆角透明）与 `assets/icon.svg`（矢量原件，任意尺寸重出都清晰）。
+- `v1.2.4/preview.png`：模组市场卡片顶部的 16:9 介绍图，1280×720，175 KB。`mod.json` 里的
+  `preview` 指向它；宿主只校验路径与扩展名，推荐尺寸与 1 MB 上限来自 folium-compound 的提交要求。
+
+这张图不是画出来的示意图：右侧那栏是**面板真实代码**渲染出的 DOM（由 `dev/folium/preview/` 的脚本从
+`panel-preview.mjs` 的产物里取出深色面板再合成），左侧才是示意——系统媒体的三行、标签页标题、Steam 状态
+这三处输出。文字改了、控件挪了，重跑一次脚本就能同步。
 
 ## 从 Folium 1 到 Folium 2 的改名对照
 
@@ -112,3 +124,5 @@ STEAM_DEPS=<那个目录>/node_modules node dev/folium/steam-bundle/build.mjs
 - `v1.2.4/` 里没有 `README.md`：开发仓库的模组目录里那份 169 KB 的 README 是 Folia 自己的《模组包规范》，
   不属于本模组，归档时略去。
 - `v1.2.3/` 与 `v1.2.4/` 里的 `steam/node_modules/lzma` 是运行时依赖，不是误提交的依赖树。
+- `v1.2.4` 这个标签在提交到模组市场之前移动过一次：补 `preview.png` 与清单里的 `preview` 一行时，
+  把它指到了新提交。移动发生在任何审查之前，指向的始终是同一份 1.2.4 功能代码。
