@@ -8,6 +8,9 @@ Folia 播放器的模组（mod id `just-enough-setting`）。把系统媒体（W
 （连接符可以就是一个空格）；歌词延迟可自动精确排期到行时间戳，也可手动 ±3 秒；带快速预设、JSON 导入导出与
 实时诊断面板。
 
+系统媒体三行与窗口标题是 Folia 自己的界面状态，不是它给模组的接口：模组默认一次都不碰，需要你在模组面板里
+明确同意之后才接管，随时可以撤销并还原。
+
 这个仓库是**版本归档**，不是开发仓库。每个 `v*` 目录都是一份完整、可直接安装的模组快照，按当时的原样保存，
 不再改动。
 
@@ -20,6 +23,7 @@ Folia 播放器的模组（mod id `just-enough-setting`）。把系统媒体（W
 | [`v1.2.2/`](v1.2.2) | 1.2.2 | 2026-10-14 | Folium 1 | — | — | 1 | 12 KB |
 | [`v1.2.3/`](v1.2.3) | 1.2.3 | 2026-11-11 | Folium 1 | `ui.stage` + `filesystem.data` | `index.cjs` + 客户端 | 34 | 8.5 MB |
 | [`v1.2.4/`](v1.2.4) | 1.2.4 | 2026-11-11 | Folium 2 名字就绪（清单仍写 1） | `stageLayers` + `filesystem.data` | `index.cjs` + 客户端 | 37 | 8.8 MB |
+| [`v1.3.0/`](v1.3.0) | 1.3.0 | 2026-11-12 | Folium 2 名字就绪（清单仍写 1） | `stageLayers` + `filesystem.data` | `index.cjs` + 客户端 | 38 | 9.1 MB |
 
 「归档日期」取自本机备份目录的时间戳，不是发布日期。每个版本对应一个同名的 git 标签（`v1.1.0` … `v1.2.4`），
 标签指向「加入该版本」的那次提交。
@@ -64,6 +68,25 @@ Folia 播放器的模组（mod id `just-enough-setting`）。把系统媒体（W
 
 归档 1.2.4 时还补了许可证文件：`LICENSE`（AGPL-3.0 全文）与 `steam/THIRD-PARTY-NOTICES.md`（bundle 里 41 个
 第三方包的许可证原文）。两者都在模组目录里，会跟着签名包一起分发。
+
+### v1.3.0 — 接管改为「用户同意后才生效」
+
+1.2.4 里有两处上架审查不接受的写法：`lib/media-session.mjs` 用 `Object.defineProperty` 替换
+`MediaSession.prototype.metadata` 的 setter，`lib/controller.mjs` 直接写 `document.title`。两处改的都是
+Folia 自己的界面状态，不是它给模组的接口。
+
+1.3.0 没有换实现（要沿用宿主发布的封面、并在宿主每次发布时接管，只能在这一层拦），而是把这两条输出整体挂到
+**一次性的用户同意**上：
+
+- **默认不接管**：没同意时一次都不碰——不装拦截、不写 `document.title`，面板上写宿主的那三个开关压暗且不吃指针；
+- 面板顶部新增「接管范围（需要你同意）」，写明改的是哪两处、为什么需要同意；点「我了解，允许接管」并二次确认后才生效；
+- 同意记在渲染进程的 `localStorage`（`lib/consent.mjs`），**不进配置导出，也不会被导入的配置顶替**——否则别人分享
+  一份配置就等于替你点了同意；
+- **随时可撤销**：撤销的那一刻把原型方法、宿主最后发布的 metadata 三行与标题一起还原，诊断面板会显示「未接管」。
+
+其余功能（片段编排、歌词延迟、逐词、进度条、预设、导入导出、诊断、Steam）不变。相对 1.2.4 改动的文件：
+`mod.json`、`client.mjs`、`lib/config.mjs`、`lib/controller.mjs`、`lib/i18n.mjs`、`lib/media-session.mjs`、
+`ui/panel.mjs`、`ui/diagnostics.mjs`，新增 `lib/consent.mjs`；`preview.png` 换成 1.3.0 的版本。
 
 ## 许可证
 
