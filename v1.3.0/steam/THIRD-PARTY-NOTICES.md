@@ -2,63 +2,69 @@
 
 本模组的 Steam 连接器包含两类第三方代码：
 
-- `steam/vendor.cjs` —— 用 esbuild 打成的单文件 bundle，含 `steam-user` 及其依赖树，共 **41 个包**。
+- `steam/vendor.cjs` —— 用 esbuild 打成的单文件 bundle，含 `steam-user` 及其依赖树，共 **43 个包**。
 - `steam/deps/lzma` —— 单独复制的 `lzma` 包（`steam-user` 在运行时按包名 `require` 它，
   打包器看不出来，所以只能跟着产物走）。它的 MIT 原文在 `deps/lzma/LICENSE`，本文不重复。
 
 **清单不是手写的**：包名从 `vendor.cjs` 里 esbuild 生成的模块路径注释（`// steam-user/components/...`）
 提取，`node dev/folium/steam-bundle/build.mjs` 重新打包后若依赖变了，自检会报出对不上的包。
 
-**关于版本**：下表的「原文取自」是抓取许可证文本时的 npm 发布版本（2026-11-11）。打包时用的依赖
-可能略早于它；这些包在各版本间没有更换过许可证类型，原文按各发布包里的 LICENSE 照录。
+**关于版本**：「产物中的版本」一列来自 `.steam-bundle/package-lock.json`（vendor.cjs 用
+`node .steam-bundle/build.mjs` 可以逐字节复现，所以这份 lock 就是版本的权威出处）；同名包在树里
+存在两个版本时一并列出并注明位置。「原文取自」是抓取许可证文本时的 npm 发布版本（2026-11-11），
+这些包在各版本间没有更换过许可证类型，原文按各发布包里的 LICENSE 照录。
 `@doctormckay/stdlib` 与 `file-manager` 的发布包里**没有** LICENSE 文件，只在 `package.json` 里写了
 `"license": "MIT"`，因此按 MIT 标准文本补录，版权行与年份取自其 `author` 字段与首次发布年份。
 
 ## 清单
 
-| 包 | 许可证 | 原文取自 |
-| --- | --- | --- |
-| `@bbob/parser` | MIT | 4.4.1 |
-| `@bbob/plugin-helper` | MIT | 4.4.1 |
-| `@doctormckay/stdlib` | MIT | 2.10.0（补录） |
-| `@doctormckay/steam-crypto` | MIT | 1.2.0 |
-| `@doctormckay/user-agents` | MIT | 1.1.0 |
-| `@protobufjs/aspromise` | BSD-3-Clause | 1.1.2 |
-| `@protobufjs/base64` | BSD-3-Clause | 1.1.2 |
-| `@protobufjs/codegen` | BSD-3-Clause | 2.0.5 |
-| `@protobufjs/eventemitter` | BSD-3-Clause | 1.1.1 |
-| `@protobufjs/fetch` | BSD-3-Clause | 1.1.1 |
-| `@protobufjs/float` | BSD-3-Clause | 1.0.2 |
-| `@protobufjs/inquire` | BSD-3-Clause | 1.1.2 |
-| `@protobufjs/path` | BSD-3-Clause | 1.1.2 |
-| `@protobufjs/pool` | BSD-3-Clause | 1.1.0 |
-| `@protobufjs/utf8` | BSD-3-Clause | 1.1.2 |
-| `adm-zip` | MIT | 0.6.1 |
-| `agent-base` | MIT | 9.0.0 |
-| `binarykvparser` | MIT | 2.3.0 |
-| `bytebuffer` | Apache-2.0 | 5.0.1 |
-| `cuint` | MIT | 0.2.2 |
-| `debug` | MIT | 4.4.3 |
-| `file-manager` | MIT | 2.0.1（补录） |
-| `ip-address` | MIT | 10.7.6 |
-| `kvparser` | MIT | 1.0.2 |
-| `long` | Apache-2.0 | 5.3.2 |
-| `ms` | MIT | 2.1.3 |
-| `node-bignumber` | Tom Wu BSD 风格（含 RSA.js 的 MIT） | 1.2.2 |
-| `permessage-deflate` | Apache-2.0 | 0.1.7 |
-| `protobufjs` | BSD-3-Clause | 8.8.1 |
-| `safe-buffer` | MIT | 5.2.1 |
-| `smart-buffer` | MIT | 4.2.0 |
-| `socks` | MIT | 2.8.10 |
-| `socks-proxy-agent` | MIT | 10.1.0 |
-| `steam-appticket` | MIT | 2.0.1 |
-| `steam-session` | MIT | 1.9.4 |
-| `steam-totp` | MIT | 2.1.2 |
-| `steam-user` | MIT | 5.3.0 |
-| `steamid` | MIT | 2.1.0 |
-| `tiny-typed-emitter` | MIT | 2.1.0 |
-| `websocket-extensions` | Apache-2.0 | 0.1.4 |
-| `websocket13` | MIT | 4.1.0 |
+| 包 | 许可证 | 产物中的版本 | 原文取自 |
+| --- | --- | --- | --- |
+| `@bbob/parser` | MIT | 2.9.0 | 4.4.1 |
+| `@bbob/plugin-helper` | MIT | 2.9.0 | 4.4.1 |
+| `@doctormckay/stdlib` | MIT（补录） | 2.10.0；`file-manager` 与 `steam-appticket` 下各嵌 1.16.1 | 2.10.0 |
+| `@doctormckay/steam-crypto` | MIT | 1.2.0 | 1.2.0 |
+| `@doctormckay/user-agents` | MIT | 1.1.0 | 1.1.0 |
+| `@protobufjs/aspromise` | BSD-3-Clause | 1.1.2 | 1.1.2 |
+| `@protobufjs/base64` | BSD-3-Clause | 1.1.2 | 1.1.2 |
+| `@protobufjs/codegen` | BSD-3-Clause | 2.0.5 | 2.0.5 |
+| `@protobufjs/eventemitter` | BSD-3-Clause | 1.1.1 | 1.1.1 |
+| `@protobufjs/fetch` | BSD-3-Clause | 1.1.1 | 1.1.1 |
+| `@protobufjs/float` | BSD-3-Clause | 1.0.2 | 1.0.2 |
+| `@protobufjs/inquire` | BSD-3-Clause | 1.1.2 | 1.1.2 |
+| `@protobufjs/path` | BSD-3-Clause | 1.1.2 | 1.1.2 |
+| `@protobufjs/pool` | BSD-3-Clause | 1.1.0 | 1.1.0 |
+| `@protobufjs/utf8` | BSD-3-Clause | 1.1.2 | 1.1.2 |
+| `adm-zip` | MIT | 0.5.18 | 0.6.1 |
+| `agent-base` | MIT | 6.0.2 | 9.0.0 |
+| `binarykvparser` | MIT | 2.3.0 | 2.3.0 |
+| `bytebuffer` | Apache-2.0 | 5.0.1 | 5.0.1 |
+| `cuint` | MIT | 0.2.2 | 0.2.2 |
+| `debug` | MIT | 4.4.3 | 4.4.3 |
+| `file-manager` | MIT（补录） | 2.0.1 | 2.0.1 |
+| `ip-address` | MIT | 10.7.6 | 10.7.6 |
+| `kvparser` | MIT | 1.0.2 | 1.0.2 |
+| `long` | Apache-2.0 | 3.2.0（顶层）；`protobufjs` 下嵌 5.3.2 | 5.3.2 |
+| `ms` | MIT | 2.1.3 | 2.1.3 |
+| `node-bignumber` | Tom Wu BSD 风格（含 RSA.js 的 MIT） | 1.2.2 | 1.2.2 |
+| `permessage-deflate` | Apache-2.0 | 0.1.7 | 0.1.7 |
+| `protobufjs` | BSD-3-Clause | 7.6.6（顶层）；`steam-appticket` 下嵌 6.11.6 | 8.8.1 |
+| `psl` | MIT | 1.15.0 | 1.15.0 |
+| `safe-buffer` | MIT | 5.2.1 | 5.2.1 |
+| `smart-buffer` | MIT | 4.2.0 | 4.2.0 |
+| `socks` | MIT | 2.8.10 | 2.8.10 |
+| `socks-proxy-agent` | MIT | 7.0.0 | 10.1.0 |
+| `steam-appticket` | MIT | 1.0.2 | 2.0.1 |
+| `steam-session` | MIT | 1.9.4 | 1.9.4 |
+| `steam-totp` | MIT | 2.1.2 | 2.1.2 |
+| `steam-user` | MIT | 5.3.0 | 5.3.0 |
+| `steamid` | MIT | 2.1.0（顶层）；`steam-appticket` 下嵌 1.1.3 | 2.1.0 |
+| `tiny-typed-emitter` | MIT | 2.1.0 | 2.1.0 |
+| `websocket-extensions` | Apache-2.0 | 0.1.4 | 0.1.4 |
+| `websocket13` | MIT | 4.1.0 | 4.1.0 |
+| `zstddec` | MIT AND BSD-3-Clause | 0.1.0 | 0.1.0 |
+
+
 
 ## 许可证原文
 
@@ -579,6 +585,81 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+```
+
+## MIT — `psl`
+
+```text
+The MIT License (MIT)
+
+Copyright (c) 2017 Lupo Montero lupomontero@gmail.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+
+## MIT AND BSD-3-Clause — `zstddec`
+
+`zstddec` 本体是 MIT；内嵌的 Zstandard 解码实现按 BSD-3-Clause 授权。
+
+```text
+The MIT License (MIT)
+
+Copyright (c) 2020 Don McCurdy
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+***
+
+BSD License
+
+For Zstandard software
+
+Copyright (c) 2016-present, Yann Collet, Facebook, Inc. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+ * Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+
+ * Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
+
+ * Neither the name Facebook nor the names of its contributors may be used to
+ endorse or promote products derived from this software without specific
+ prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
 
 ## BSD-3-Clause — 10 个包共用同一份原文

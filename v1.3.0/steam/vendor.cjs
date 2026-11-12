@@ -1,8 +1,7 @@
 /* eslint-disable */
 // 自动生成，请勿手改。
-// 源码：mods/Just-Enough-Setting/steam/connector.mjs
-// 重新生成：node dev/folium/steam-bundle/build.mjs
-"use strict";
+// 源码：steam/connector.mjs
+// 重新生成：node .steam-bundle/build.mjs
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -231265,10 +231264,10 @@ var require_common3 = __commonJS({
     }
     function testBit(binaryValue, position) {
       const { length } = binaryValue;
-      if (position > length) {
+      if (position >= length) {
         return false;
       }
-      const positionInString = length - position;
+      const positionInString = length - position - 1;
       return binaryValue.substring(positionInString, positionInString + 1) === "1";
     }
   }
@@ -232761,7 +232760,7 @@ var require_ipv6 = __commonJS({
         address = this.parse4in6(address);
         const badCharacters = address.match(constants6.RE_BAD_CHARACTERS);
         if (badCharacters) {
-          throw new address_error_1.AddressError(`Bad character${badCharacters.length > 1 ? "s" : ""} detected in address: ${badCharacters.join("")}`, address.replace(constants6.RE_BAD_CHARACTERS, '<span class="parse-error">$1</span>'));
+          throw new address_error_1.AddressError(`Bad character${badCharacters.length > 1 ? "s" : ""} detected in address: ${badCharacters.join("")}`, address.replace(constants6.RE_BAD_CHARACTERS, (character) => `<span class="parse-error">${helpers.escapeHtml(character)}</span>`));
         }
         const badAddress = address.match(constants6.RE_BAD_ADDRESS);
         if (badAddress) {
@@ -263036,7 +263035,7 @@ var require_steam_user = __commonJS({
   }
 });
 
-// E:/User Files/Study_Files/Github/folia-major/mods/Just-Enough-Setting/steam/connector.mjs
+// ../../v1.3.0/steam/connector.mjs
 var connector_exports = {};
 __export(connector_exports, {
   MAX_PLAYING_LENGTH: () => MAX_PLAYING_LENGTH,
