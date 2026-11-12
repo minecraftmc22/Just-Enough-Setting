@@ -1,6 +1,6 @@
 # .steam-bundle — vendor.cjs 的复现环境
 
-`v1.3.0/steam/vendor.cjs` 是用 esbuild 把 `steam/connector.mjs` 和它的依赖打成的单文件。
+`v1.3.1/steam/vendor.cjs` 是用 esbuild 把 `steam/connector.mjs` 和它的依赖打成的单文件。
 这个目录把复现它所需的一切钉死：依赖版本在 `package-lock.json` 里，构建参数在 `build.mjs` 里。
 
 ## 复现步骤
@@ -9,7 +9,7 @@
 cd .steam-bundle
 npm ci
 cd ..
-node .steam-bundle/build.mjs            # 缺省指向本仓库的 v1.3.0/
+node .steam-bundle/build.mjs            # 缺省指向本仓库的 v1.3.1/
 # 或：node .steam-bundle/build.mjs <别的模组目录>
 ```
 
@@ -25,9 +25,14 @@ node .steam-bundle/build.mjs            # 缺省指向本仓库的 v1.3.0/
 | lzma（运行时包，进 `steam/deps/lzma`） | 2.3.2 |
 | 其余依赖 | 见 `package-lock.json`，全部精确钉死 |
 
-复现产物与仓库里 `v1.3.0/steam/vendor.cjs` **逐字节一致**
-（sha256 `5641b575ce714a68ce7a6b9b3db4c060b4fa164c38c9134e2552a5ed360958c8`，本机两次独立的
-`npm ci` + 构建已验证一致）。banner 与 esbuild 的入口注释都用相对路径，与检出位置无关。
+复现产物与仓库里 `v1.3.1/steam/vendor.cjs` **逐字节一致**
+（sha256 `bfee3320c89fb48c447b87968200c31c08018eb3aabc2f2eb0e53242d9e01419`，8,281,869 B；
+本机两次独立的 `npm ci` + 构建已验证一致）。
+
+有一个限制要说清楚：esbuild 给**入口文件**写的模块注释是相对构建目录的路径
+（`// ../../v1.3.1/steam/connector.mjs`），其中含目标目录名。所以这个「逐字节一致」对
+`v1.3.1/` 成立，对 `<别的目录名>` 则只差这一行注释（字节数不变）；仓库路径本身（检出的盘符、
+上层目录）不影响产物。
 
 ## 两个刻意的决定
 
@@ -42,4 +47,4 @@ node .steam-bundle/build.mjs            # 缺省指向本仓库的 v1.3.0/
 
 ## 第三方许可证
 
-`v1.3.0/steam/THIRD-PARTY-NOTICES.md` 的「产物中的版本」一列与这里的 lock 一一对应。
+`v1.3.1/steam/THIRD-PARTY-NOTICES.md` 的「产物中的版本」一列与这里的 lock 一一对应。

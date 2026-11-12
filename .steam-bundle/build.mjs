@@ -1,10 +1,10 @@
 /*
- * 把 Steam 连接器和它的依赖打成一个文件，复现 v1.3.0/steam/vendor.cjs。
+ * 把 Steam 连接器和它的依赖打成一个文件，复现 v1.3.1/steam/vendor.cjs。
  *
  *   cd .steam-bundle && npm ci
  *   node .steam-bundle/build.mjs [模组目录]
  *
- * 模组目录缺省为本仓库的 v1.3.0/（也就是投稿 issue 里指向的目录）。
+ * 模组目录缺省为本仓库的 v1.3.1/（也就是投稿 issue 里指向的目录）。
  * 产物：<模组目录>/steam/vendor.cjs，外加同目录的 system.pem 与 deps/lzma。
  *
  * 为什么必须打包：宿主用 computeModDigest 给模组目录算内容摘要，绑定用户的
@@ -29,7 +29,7 @@ import { fileURLToPath } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(HERE, '..');
-const MOD_DIR = path.resolve(process.argv[2] || path.join(REPO_ROOT, 'v1.3.0'));
+const MOD_DIR = path.resolve(process.argv[2] || path.join(REPO_ROOT, 'v1.3.1'));
 const STEAM_DIR = path.join(MOD_DIR, 'steam');
 const ENTRY = path.join(STEAM_DIR, 'connector.mjs');
 const OUT_FILE = path.join(STEAM_DIR, 'vendor.cjs');

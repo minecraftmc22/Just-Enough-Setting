@@ -24,9 +24,10 @@ Folia 播放器的模组（mod id `just-enough-setting`）。把系统媒体（W
 | [`v1.2.3/`](v1.2.3) | 1.2.3 | 2026-11-11 | Folium 1 | `ui.stage` + `filesystem.data` | `index.cjs` + 客户端 | 34 | 8.5 MB |
 | [`v1.2.4/`](v1.2.4) | 1.2.4 | 2026-11-11 | Folium 2 名字就绪（清单仍写 1） | `stageLayers` + `filesystem.data` | `index.cjs` + 客户端 | 37 | 8.8 MB |
 | [`v1.3.0/`](v1.3.0) | 1.3.0 | 2026-11-12 | Folium 2 名字就绪（清单仍写 1） | `stageLayers` + `filesystem.data` | `index.cjs` + 客户端 | 38 | 9.1 MB |
+| [`v1.3.1/`](v1.3.1) | 1.3.1 | 2026-11-12 | Folium 2 名字就绪（清单仍写 1） | `stageLayers` + `filesystem.data` | `index.cjs` + 客户端 | 38 | 9.1 MB |
 
 「归档日期」取自本机备份目录的时间戳，不是发布日期。每个版本对应一个同名的 git 标签（`v1.1.0` … `v1.2.4`），
-标签指向「加入该版本」的那次提交。
+标签指向「加入该版本」的那次提交（`v1.1.0` … `v1.3.1`）。
 
 ## 各个版本
 
@@ -88,14 +89,30 @@ Folia 自己的界面状态，不是它给模组的接口。
 `mod.json`、`client.mjs`、`lib/config.mjs`、`lib/controller.mjs`、`lib/i18n.mjs`、`lib/media-session.mjs`、
 `ui/panel.mjs`、`ui/diagnostics.mjs`，新增 `lib/consent.mjs`；`preview.png` 换成 1.3.0 的版本。
 
+### v1.3.1 — 版本号前进，Steam 产物改为可复现
+
+功能代码与 1.3.0 **完全相同**，只有三处变化：
+
+1. `mod.json` 与 `lib/config.mjs` 的版本号改成 1.3.1；
+2. 仓库根新增 `.steam-bundle/`（`package.json`、`package-lock.json`、`build.mjs`、`README.md`）：把
+   `steam/vendor.cjs` 的生成环境钉死，`cd .steam-bundle && npm ci && cd .. && node .steam-bundle/build.mjs`
+   就能逐字节重建产物。这个目录在模组目录**外面**，不会被签名包收录。
+3. `steam/vendor.cjs` 因此用这棵干净的依赖树重打了一次（包集合与旧产物一致，8,281,869 B）。
+
+重打的原因：原来的产物来自开发仓库里混着宿主依赖的 `node_modules`，从本仓库内复现不出来。现在
+`THIRD-PARTY-NOTICES.md` 的「产物中的版本」一列与 `.steam-bundle` 的 lock 一一对应，共 43 个包
+（旧表是 41 行——`psl` 与 `zstddec` 的产物模块是 `.cjs`，此前被提取脚本漏掉，两行都已补上并附原文）。
+`preview.png` 换成带 1.3.1 徽标的同一张图。
+
 ## 许可证
 
 本仓库与全部版本目录均为 **AGPL-3.0**（[`LICENSE`](LICENSE) 是 FSF 的原文，未作改动）。
 
 Steam 连接器里捆了第三方代码，各自的许可证**没有**被 AGPL 覆盖：
 
-- `v1.2.4/steam/THIRD-PARTY-NOTICES.md` 汇总了 `steam/vendor.cjs` 里 41 个包的许可证原文，
-  以及每个包的版权行；清单是从产物的模块路径注释里提取的，不是手抄。
+- `v1.3.1/steam/THIRD-PARTY-NOTICES.md` 汇总了 `steam/vendor.cjs` 里 43 个包的许可证原文、每个包的
+  版权行与「产物中的版本」；清单是从产物的模块路径注释与 `.steam-bundle` 的 lock 里对着提取的，不是手抄。
+- `v1.2.4/steam/THIRD-PARTY-NOTICES.md` 是当时那版（41 行）的原文，保留不动。
 - `v1.2.4/steam/deps/lzma/LICENSE` 是 lzma 的 MIT 原文（它单独成目录，许可证跟着走）。
 - 上架表单要求「包含第三方库时把它们的许可证文件放在模组目录里」，这两份就是为此准备的。
 
@@ -105,12 +122,13 @@ Steam 连接器里捆了第三方代码，各自的许可证**没有**被 AGPL �
 ## 图标与市场介绍图
 
 - `assets/icon.png`（1024×1024，圆角透明）与 `assets/icon.svg`（矢量原件，任意尺寸重出都清晰）。
-- `v1.2.4/preview.png`：模组市场卡片顶部的 16:9 介绍图，1280×720，175 KB。`mod.json` 里的
+- `v1.3.1/preview.png`：模组市场卡片顶部的 16:9 介绍图，1280×720，543 KB。`mod.json` 里的
   `preview` 指向它；宿主只校验路径与扩展名，推荐尺寸与 1 MB 上限来自 folium-compound 的提交要求。
+- `v1.2.4/preview.png`：上一代（175 KB），用面板 DOM 拼的，界面对不上真机，已被替换。
 
-这张图不是画出来的示意图：右侧那栏是**面板真实代码**渲染出的 DOM（由 `dev/folium/preview/` 的脚本从
-`panel-preview.mjs` 的产物里取出深色面板再合成），左侧才是示意——系统媒体的三行、标签页标题、Steam 状态
-这三处输出。文字改了、控件挪了，重跑一次脚本就能同步。
+1.3.x 这张图里的界面像素**全部取自真机截图**：右侧是设置面板「系统媒体（SMTC）」那一节的真实渲染，
+左下是系统媒体卡片与 Steam 好友行，脚本只做裁切、放大与排版（`dev/folium/preview/preview-card.py`）。
+1.2.4 那张是把面板 DOM 塞进假窗口拼的，所以看起来像界面但控件状态与真机不符。
 
 ## 从 Folium 1 到 Folium 2 的改名对照
 
@@ -145,17 +163,20 @@ Steam 连接器里捆了第三方代码，各自的许可证**没有**被 AGPL �
 之所以必须打包：宿主给模组目录算内容摘要时有硬上限（2000 个文件 / 64 MB），超了会抛
 `mod-content-unverifiable`，模组永远无法启用。
 
-它是构建产物，由开发仓库的 `dev/folium/steam-bundle/build.mjs` 生成。要重建：
+它是构建产物，1.3.1 起由仓库根的 `.steam-bundle/` 生成（依赖版本由 `package-lock.json` 钉死，
+Node v22.22.2 / esbuild 0.28.2）。要重建：
 
 ```bash
-# 先在任意目录装依赖
-npm i steam-user
-# 再指向那棵依赖树打包
-STEAM_DEPS=<那个目录>/node_modules node dev/folium/steam-bundle/build.mjs
+cd .steam-bundle && npm ci
+cd .. && node .steam-bundle/build.mjs      # 缺省指向 v1.3.1/
 ```
 
-产物落在模组的 `steam/vendor.cjs`，同目录的 `system.pem` 也必须一起带走（`@doctormckay/steam-crypto` 在
-`require` 时按 `__dirname` 读它）。
+产物落在模组的 `steam/vendor.cjs`，与仓库里那份逐字节一致（`sha256 bfee3320…`）。脚本还会把
+`@doctormckay/steam-crypto` 的 `system.pem` 复制过来并整包复制 `deps/lzma`——这两样都必须跟着产物走。
+
+注意产物里有**一处路径依赖**：esbuild 给入口文件的模块注释写的是相对构建目录的路径
+（`// ../../v1.3.1/steam/connector.mjs`）。所以对着 `v1.3.0/` 构建出来的文件除了这一行之外与 1.3.1 的
+完全相同（字节数也一样），比对时以「默认目录构建」的结果为准。
 
 还要带走 `steam/deps/lzma`：`steam-user` 用 `requireWithFallback('lzma-native', 'lzma')` 把包名当参数传进去，
 打包器看不见这句 require，只能让它在运行时从磁盘解析。目录名刻意不叫 `node_modules`——那样上架时会被整层剔除。
